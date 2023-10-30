@@ -1,0 +1,98 @@
+<!DOCTYPE html> 
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/style.css"/>
+        <title>Messenger App</title>
+    </head>    
+<body>
+    <script src = "/socket.io/socket.io.js"></script>
+    <script> 
+        var body = document.getElementsByTagName('body');
+        var socket = io();
+
+        body.onload = function(){
+            socket.emit('onload')
+        }
+
+        var send = function() {
+            var text = document.getElementById('messageInput').value;
+            var user = document.querySelector('#username').value;
+            if (text!=""){
+                if (user!=""){
+                    socket.emit('message', {"user":user,"content":text});
+                    document.getElementById('messageInput').value='';
+                }
+                
+            }
+        }
+        
+        var receive = function(message) {
+            var li = document.createElement('li');
+            var p_user = document.createElement('p');
+            p_user.classList.add('message-user');
+            p_user.innerText = message.user;
+            var p_content = document.createElement('p');
+            p_content.classList.add('message-content');
+            // TO PREVENT XSS : use innerText vs innerHTML
+            // p_content.innerText = message.content;
+            p_content.innerHTML = message.content;
+            li.appendChild(p_user);
+            li.appendChild(p_content);
+            document.getElementById('messages').appendChild(li);
+        }
+
+        var onload = function(message) {
+            var li = document.createElement('li');
+            li.innerHTML = message.user ;
+            document.getElementById('messages').appendChild(li);
+        }
+
+        var login = function(){
+            var text = document.getElementById('username').value;
+            if (text!=""){
+                socket.emit('message',{"user":text,"content":""});
+            }
+        }
+        
+        var handle_input = function(event){
+            if (event.keyCode==13){
+                send();
+            }
+        }
+        
+        socket.on('message', receive);
+        socket.on('onload', onload);
+    
+    </script>
+    <header>
+        <ul>
+            <li class="project-name">Cassandra DB</li>
+            <li class="group">
+                <p>User : </p>
+            </li>
+        </ul>
+    </header>
+    
+    <div class="area">
+        <div class="username-selection">
+            <input type="text" id="username" placeholder="Username">
+            <button onclick="login()">Confirm</button>
+        </div>
+        
+        <div class="table-container">
+            <ul id="messages">
+                
+            </ul>
+            <div class="message-input">
+                <input id="messageInput" type="input" onkeypress="handle_input(event)" placeholder="Message to send"/> 
+            </div>
+        </div>
+    </div>
+
+    
+</body> 
+</html>
