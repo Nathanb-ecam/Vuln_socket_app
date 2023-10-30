@@ -81,15 +81,17 @@ io.on("connection", function(socket) {
 
 
             console.log('MESSAGE TO STORE',content)
-            connection.query(`INSERT INTO message (sender,message) VALUES ("${user}","${content}" )`, function(error,result){
-                if(error){
-                    console.log(error);
-                }else{
+
+            // connection.query(`INSERT INTO message (sender,message) VALUES ("${user}","${content}" )`, function(error,result){
+            //     if(error){
+            //         console.log(error);
+            //     }else{
                     
-                    // res.render('forum.ejs',{messages:latestMessages});
-                    console.log('Message registered in db ');
-                }
-            });
+            //         // res.render('forum.ejs',{messages:latestMessages});
+            //         console.log('Message registered in db ');
+            //     }
+            // });
+
         }
     });
 
@@ -97,17 +99,17 @@ io.on("connection", function(socket) {
         console.log("new client lets show him the past");
 
 
-        connection.query(`SELECT * FROM Message;`, function(error,result){
-            if(error!=undefined){
-                console.log('Error:',error);
-            }else{
-                console.log("onload",result.rows);
-                for (var i = 0; i < result.rows.length; i++) {
-                    message = result.rows.messages[i].message;
-                    io.emit('onload', {"user":message.sender,"content":message.message})
-                }
-            }
-        });
+        // connection.query(`SELECT * FROM Message;`, function(error,result){
+        //     if(error!=undefined){
+        //         console.log('Error:',error);
+        //     }else{
+        //         console.log("onload",result.rows);
+        //         for (var i = 0; i < result.rows.length; i++) {
+        //             message = result.rows.messages[i].message;
+        //             io.emit('onload', {"user":message.sender,"content":message.message})
+        //         }
+        //     }
+        // });
 
 
     });
